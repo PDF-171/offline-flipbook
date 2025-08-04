@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PDF Flipbook</title>
 
-  <!-- Load jQuery and Turn.js -->
+  <!-- Load jQuery and Working Turn.js -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@4/turn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/turn.js@4/turn.min.js"></script>
 
   <!-- Load PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -15,7 +15,6 @@
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
   </script>
 
-  <!-- Styles -->
   <style>
     html, body {
       margin: 0;
@@ -41,10 +40,8 @@
 </head>
 <body>
 
-  <!-- Flipbook container -->
   <div id="flipbook"></div>
 
-  <!-- Flipbook Logic -->
   <script>
     const pdfUrl = 'apollo-flyer.pdf';
 
@@ -55,7 +52,6 @@
       const pageWidth = 600;
       const pageHeight = 850;
 
-      // Add blank pages for each PDF page
       for (let i = 1; i <= totalPages; i++) {
         const pageDiv = document.createElement('div');
         pageDiv.className = 'page';
@@ -64,16 +60,14 @@
         flipbook.appendChild(pageDiv);
       }
 
-      // Initialize turn.js
       $('#flipbook').turn({
         width: pageWidth,
         height: pageHeight,
         autoCenter: true,
-        display: 'single', // only one page shown
+        display: 'single',
         acceleration: true
       });
 
-      // Render each PDF page into corresponding div
       for (let i = 1; i <= totalPages; i++) {
         pdf.getPage(i).then(page => {
           const viewport = page.getViewport({ scale: pageWidth / page.getViewport({ scale: 1 }).width });
