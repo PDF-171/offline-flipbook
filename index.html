@@ -44,7 +44,6 @@
 
   <script>
     const pdfUrl = 'apollo-flyer.pdf';
-
     const flipbook = document.getElementById('flipbook');
 
     pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
@@ -52,6 +51,7 @@
       const pageWidth = 600;
       const pageHeight = 850;
 
+      // Create page containers
       for (let i = 1; i <= totalPages; i++) {
         const pageDiv = document.createElement('div');
         pageDiv.className = 'page';
@@ -60,6 +60,7 @@
         flipbook.appendChild(pageDiv);
       }
 
+      // Initialize turn.js
       $('#flipbook').turn({
         width: pageWidth,
         height: pageHeight,
@@ -68,6 +69,7 @@
         acceleration: true
       });
 
+      // Render PDF pages
       for (let i = 1; i <= totalPages; i++) {
         pdf.getPage(i).then(page => {
           const viewport = page.getViewport({ scale: pageWidth / page.getViewport({ scale: 1 }).width });
