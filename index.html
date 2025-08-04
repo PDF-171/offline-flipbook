@@ -1,75 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Offline PDF Flipbook</title>
-  <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: #1a1a1a;
-      font-family: sans-serif;
-    }
-    #flipbook {
-      width: 90%;
-      height: 90vh;
-      margin: 5vh auto;
-    }
-    .page canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  </style>
-</head>
-<body>
-  <div id="flipbook"></div>
+<script src="pdfjs/pdf.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
+</script>
 
-  <!-- Load local PDF.js -->
-  <script src="pdfjs/pdf.js"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
-  </script>
+<!-- Flipbook logic -->
+<script>
+  const pdfUrl = 'apollo-flyer.pdf'; // ✅ match your real PDF filename
 
-  <!-- Flipbook engine -->
-  <script src="turner.js"></script>
+  const container = document.getElementById('flipbook');
 
-  <!-- Flipbook logic -->
-  <script>
-    const pdfUrl = 'apollo-flyer.pdf'; // change this if needed
-    const container = document.getElementById('flipbook');
+  pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+    const totalPages = pdf.numPages;
+    let loadedPages = 0;
 
-    pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-      const totalPages = pdf.numPages;
-      let loadedPages = 0;
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.getPage(i).then(page => {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const viewport = page.getViewport({ scale: 1.5 });
 
-      for (let i = 1; i <= totalPages; i++) {
-        pdf.getPage(i).then(page => {
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          const viewport = page.getViewport({ scale: 1.5 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
+        page.render({ canvasContext: context, viewport }).promise.then(() => {
+          const pageDiv = document.createElement('div');
+          pageDiv.className = 'page';
+          pageDiv.appendChild(canvas);
+          container.appendChild(pageDiv);
 
-          page.render({ canvasContext: context, viewport }).promise.then(() => {
-            const pageDiv = document.createElement('div');
-            pageDiv.className = 'page';
-            pageDiv.appendChild(canvas);
-            container.appendChild(pageDiv);
-
-            loadedPages++;
-            if (loadedPages === totalPages) {
-              $('#flipbook').turn({
-                width: viewport.width * 2,
-                height: viewport.height,
-                autoCenter: true
-              });
-            }
-          });
+          loadedPages++;
+          if (loadedPages === totalPages) {
+            $('#flipbook').turn({
+              width: viewport.width * 2,
+              height: viewport.height,
+              autoCenter: true
+            });
+          }
         });
-      }
-    });
-  </script>
-</body>
-</html>
+      });
+    }
+  });
+</script>
