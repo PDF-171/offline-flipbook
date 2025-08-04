@@ -1,14 +1,44 @@
-<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Flipbook</title>
 
-  <div id="flipbook"></div> <!-- ✅ this exists before the script runs -->
-
-  <!-- All JS goes here -->
+  <!-- Turn.js + jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+
+  <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+  </script>
 
+  <!-- Styles -->
+  <style>
+    body {
+      margin: 0;
+      background: #1d1d1d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #flipbook {
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .page canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="flipbook"></div>
+
+  <script>
     const pdfUrl = 'apollo-flyer.pdf';
     const container = document.getElementById('flipbook');
 
@@ -44,5 +74,5 @@
       }
     });
   </script>
-
 </body>
+</html>
