@@ -1,43 +1,77 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-<script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Flipbook</title>
 
-<!-- Flipbook logic -->
-<script>
-  const pdfUrl = 'apollo-flyer.pdf'; // ✅ match your real PDF filename
+  <!-- Turn.js + jQuery from CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
 
-  const container = document.getElementById('flipbook');
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+  </script>
 
-  pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
-    const totalPages = pdf.numPages;
-    let loadedPages = 0;
-
-    for (let i = 1; i <= totalPages; i++) {
-      pdf.getPage(i).then(page => {
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        const viewport = page.getViewport({ scale: 1.5 });
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        page.render({ canvasContext: context, viewport }).promise.then(() => {
-          const pageDiv = document.createElement('div');
-          pageDiv.className = 'page';
-          pageDiv.appendChild(canvas);
-          container.appendChild(pageDiv);
-
-          loadedPages++;
-          if (loadedPages === totalPages) {
-            $('#flipbook').turn({
-              width: viewport.width * 2,
-              height: viewport.height,
-              autoCenter: true
-            });
-          }
-        });
-      });
+  <!-- Some styling -->
+  <style>
+    body {
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      text-align: center;
     }
-  });
-</script>
+    #flipbook {
+      margin: 40px auto;
+    }
+    .page canvas {
+      border: 1px solid #ccc;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>My PDF Flipbook</h1>
+  <div id="flipbook"></div>
+
+  <script>
+    const pdfUrl = 'apollo-flyer.pdf'; // Make sure this file exists
+
+    const container = document.getElementById('flipbook');
+
+    pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+      const totalPages = pdf.numPages;
+      let loadedPages = 0;
+
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.getPage(i).then(page => {
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          const viewport = page.getViewport({ scale: 1.5 });
+
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          page.render({ canvasContext: context, viewport }).promise.then(() => {
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'page';
+            pageDiv.appendChild(canvas);
+            container.appendChild(pageDiv);
+
+            loadedPages++;
+            if (loadedPages === totalPages) {
+              $('#flipbook').turn({
+                width: viewport.width * 2,
+                height: viewport.height,
+                autoCenter: true
+              });
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
