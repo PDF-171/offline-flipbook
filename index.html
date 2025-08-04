@@ -1,44 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF Flipbook</title>
-
-  <!-- Turn.js + jQuery from CDN -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
-
-  <!-- PDF.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
-  </script>
-
-  <!-- Some styling -->
-  <style>
-    body {
-      background: #f5f5f5;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    #flipbook {
-      margin: 40px auto;
-    }
-    .page canvas {
-      border: 1px solid #ccc;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    }
-  </style>
-</head>
 <body>
 
   <h1>My PDF Flipbook</h1>
-  <div id="flipbook"></div>
+  <div id="flipbook"></div> <!-- ✅ this exists before the script runs -->
 
+  <!-- All JS goes here -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script>
-    const pdfUrl = 'apollo-flyer.pdf'; // Make sure this file exists
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
 
+    const pdfUrl = 'apollo-flyer.pdf';
     const container = document.getElementById('flipbook');
 
     pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
@@ -73,5 +45,5 @@
       }
     });
   </script>
+
 </body>
-</html>
