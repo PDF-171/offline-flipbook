@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PDF Flipbook</title>
 
-  <!-- jQuery + Turn.js -->
+  <!-- Load jQuery and Turn.js -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/blasten/turn.js@4/turn.min.js"></script>
 
-  <!-- PDF.js -->
+  <!-- Load PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
@@ -20,16 +20,20 @@
     html, body {
       margin: 0;
       padding: 0;
-      background: #000;
+      background: #111;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       overflow: hidden;
     }
+
     #flipbook {
+      width: 600px;
+      height: 850px;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
+
     .page canvas {
       display: block;
     }
@@ -37,10 +41,13 @@
 </head>
 <body>
 
+  <!-- Flipbook container -->
   <div id="flipbook"></div>
 
+  <!-- Flipbook Logic -->
   <script>
     const pdfUrl = 'apollo-flyer.pdf';
+
     const flipbook = document.getElementById('flipbook');
 
     pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
@@ -48,7 +55,7 @@
       const pageWidth = 600;
       const pageHeight = 850;
 
-      // Initialize empty pages for turn.js
+      // Add blank pages for each PDF page
       for (let i = 1; i <= totalPages; i++) {
         const pageDiv = document.createElement('div');
         pageDiv.className = 'page';
@@ -57,21 +64,22 @@
         flipbook.appendChild(pageDiv);
       }
 
-      // After page containers are added, initialize turn.js
+      // Initialize turn.js
       $('#flipbook').turn({
-        width: pageWidth * 2,
+        width: pageWidth,
         height: pageHeight,
         autoCenter: true,
-        display: 'double',
+        display: 'single', // only one page shown
         acceleration: true
       });
 
-      // Then render each PDF page into its corresponding div
+      // Render each PDF page into corresponding div
       for (let i = 1; i <= totalPages; i++) {
         pdf.getPage(i).then(page => {
           const viewport = page.getViewport({ scale: pageWidth / page.getViewport({ scale: 1 }).width });
           const canvas = document.createElement('canvas');
           const context = canvas.getContext('2d');
+
           canvas.width = viewport.width;
           canvas.height = viewport.height;
 
